@@ -12,37 +12,137 @@ app.use('/client', express.static(__dirname + '/client'));
 server.listen(1919);
 
 var SOCKETLIST = {};
+var ENTITYlIST = {};
+var PLAYERLIST = {};
+
+var Entity = function(id){
+    
+    id = (typeof id === 'undefined') ? Math.floor(Math.random*1000)+1 : id;
+
+    var self = {
+
+        id : id,
+        x : 300,
+        y : 400,
+        Vx : 0,
+        Vy : 0,
+        Vmax : 5
+    }
+    
+    return self;
+}
+
+var Player = function(id, name){
+
+    var  self = Entity(id);
+
+    self.name = name;
+
+    self.upKeyPressed = false;
+    self.downKeyPressed = false;
+    self.leftKeyPressed = false;
+    self.rightKeyPressed = false;
+
+    PLAYERLIST[id] = self;
+
+    self.checkPosition = function (axis, direction){
+        
+        if(axis == 'x'){
+            if(direction == '+'){
+                return self.x < 740;
+            }else if(direction == '-'){
+                return self.x > 20;
+            }
+        }
+        else if(axis == 'y'){
+            if(direction == '+'){
+                return self.y > 20;    
+            }else if(direction == '-'){
+                return self.y < 540;
+            }
+        }
+    } 
+
+    self.welcomeMessage = function (){
+        return "Welcome to the Game " + self.name + ", your id is: " + self.id;
+    }
+
+    self.setMessage = function (message){
+        return self.name + " (" + self.id + "): " + message;
+    }
+
+    return self;
+}
 
 io.sockets.on('connection', function(socket){
     
-    socket.id = Math.floor(Math.random() * 100);
-    socket.x = 0;
-    socket.y = 0;
-    socket.Vx = 1;
-    socket.Vy = 1;
-    
-    SOCKETLIST[socket.id] = socket;
+    socket.on('sign', function(data){
+        if(data.length < 15){
+            
+            socket.id = Math.floor(Math.random() * 90) + 10;
+            SOCKETLIST[socket.id] = socket;
+            socket.emit('signed',data);
+            let name = data
+            let player = Player(socket.id, name);
+            
+            playerStatusChange(player, 'Online');
+            socket.emit('consoleMessage',player.welcomeMessage());
 
-    let message = "Player " + socket.id + " is online";
+        }
+    });
 
-    sendMessageToUsers(message);
+    //  KEY EVENTS
 
-    socket.on("disconnect",function(){
+    socket.on('upKeyEvent',function(data){
+        let player = PLAYERLIST[socket.id];
+        player.upKeyPressed = data;
+    });
 
-        delete SOCKETLIST[socket.id];        
-        let message = "Player " + socket.id + " is offline";
-        sendMessageToUsers(message);
+    socket.on('downKeyEvent',function(data){
+        let player = PLAYERLIST[socket.id];
+        player.downKeyPressed = data;
+    });
 
+    socket.on('leftKeyEvent',function(data){
+        let player = PLAYERLIST[socket.id];
+        player.leftKeyPressed = data;
+    });
+
+    socket.on('rightKeyEvent',function(data){
+        let player = PLAYERLIST[socket.id];
+        player.rightKeyPressed = data;
+    });
+
+    socket.on('messageFromPlayer', function(data){
+        
+        let player = PLAYERLIST[socket.id];
+        sendDataToUsers('consoleMessage', player.setMessage(data));
+    });
+
+    socket.on('disconnect',function(){
+
+        let done = playerStatusChange(PLAYERLIST[socket.id], 'Offline');        
+        
+        setTimeout(function(){
+            if(done){
+                delete SOCKETLIST[socket.id];  
+                delete PLAYERLIST[socket.id]; 
+            }               
+        },1000);        
     });
 
 });
 
+//  MAIN LOOP
+
 setInterval(function(){
     
-        updateLocations();
-        updateUsers();    
+    updateLocations();
+    updateUsers();    
             
-},40);
+},20);
+
+//  FUNCTIONS   
 
 function updateUsers(){
             
@@ -53,34 +153,42 @@ function updateUsers(){
 }
             
 function updateLocations(){
-    for(var i in SOCKETLIST){
+    for(var i in PLAYERLIST){
                         
-        socket = SOCKETLIST[i];
+        var player = PLAYERLIST[i];
             
-        if(isUserAtVerticalLimits(socket))
-            socket.Vx = -socket.Vx;
+        if(player.upKeyPressed && player.checkPosition('y','+'))
+            player.Vy = -player.Vmax;
+        else if(player.downKeyPressed && player.checkPosition('y','-'))
+            player.Vy = player.Vmax;
+        else
+            player.Vy = 0; 
         
-        if(isUserAtHorizontalLimits(socket))
-            socket.Vy = -socket.Vy;
+        if(player.leftKeyPressed && player.checkPosition('x','-'))
+            player.Vx = -player.Vmax;
+        
+        else if(player.rightKeyPressed && player.checkPosition('x','+'))
+            player.Vx = player.Vmax;
+        else
+            player.Vx = 0;
             
-            
-        socket.x += socket.Vx;
-        socket.y += socket.Vy; 
+        player.x += player.Vx;
+        player.y += player.Vy; 
     }
 }
-            
+    
 function getAllUsersData(){
             
     var usersData = [];
             
-    for(var i in SOCKETLIST){
+    for(var i in PLAYERLIST){
                         
-        socket = SOCKETLIST[i];
+        player = PLAYERLIST[i];
                         
         usersData.push({
             id : i,
-            x : socket.x, 
-            y : socket.y 
+            x : player.x, 
+            y : player.y 
         });
             
     }
@@ -102,21 +210,18 @@ function sendMessageToUsers(message){
 
 }
 
-function isUserAtVerticalLimits(socket){
+function playerStatusChange(player, status){
 
-    if((socket.x > 700 && socket.Vx > 0) || (socket.x < 100 && socket.Vx < 0))
-        return true;
+    let message = player.name + " (" + player.id + ") is " + status ;
 
-    return false;
+    sendDataToUsers('player' + status, message);
+
+    return true;
+
 }
 
-function isUserAtHorizontalLimits(socket){
-    
-        if((socket.y > 500 && socket.Vy > 0) || (socket.y < 100 && socket.Vy < 0))
-            return true;
-    
-        return false;
-    }
+
+
 
 
 

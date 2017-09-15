@@ -1,0 +1,42 @@
+body{
+    background: rgba(0,0,0,0.1);
+}
+.canvas{
+    /*background: rgba(200,200,250,0.3);*/
+    border:4px solid rgba(50,50,250,0.4);
+}
+.container-div{
+    margin-left: 820px;
+    margin-top: -610px;
+    display: inline-block;
+}
+.player-list{
+    text-align: center;
+    background: rgba(250,200,200,0.3);
+    border:4px solid rgba(250,50,50,0.4);
+    width: 400px;
+    height: 50px;
+}
+.message-board{
+    background: rgba(200,250,200,0.3);
+    border:4px solid rgba(50,250,50,0.4);
+    width:400px;
+    height:500px;
+    margin-top: 10px;
+    overflow-y: scroll;
+}
+#message-input{
+    height: 35px;
+    width: 100%;
+
+}
+.online-message{
+    color:rgba(50,200,50,0.6);
+    
+}
+.offline-message{
+    color:rgba(200,50,50,0.6);
+}
+.system-message{
+    color:rgba(50,50,200,0.6);
+}
