@@ -2,7 +2,6 @@ let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext('2d');
 let playerRadius;
 
-
 socket.on('drawConfig', function (data) {
 	canvas.width = data.canvas.width;
 	canvas.height = data.canvas.height;
@@ -12,9 +11,10 @@ socket.on('drawConfig', function (data) {
 
 socket.on('dataUpdate', function (data) {
 
-	let playerList = "";
 	let playerData = data['playerData'];
 	let areaData = data['areaData'];
+	let playersLength = playerData.length;
+	let tableHtml = generateTableHeadings();
 
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -23,8 +23,8 @@ socket.on('dataUpdate', function (data) {
 		let area = areaData[i];
 		let lifeTimeRate = area.lifeTime / area.totalLifeTime;
 		ctx.beginPath();
-		ctx.arc(area.x, area.y, area.range, 0,  2 * Math.PI, false);
-		ctx.fillStyle = getColorFromDuration(lifeTimeRate);
+		ctx.arc(area.x, area.y, area.range, 0, 2 * Math.PI, false);
+		ctx.fillStyle = getColorFromLifeTime(lifeTimeRate);
 		ctx.fill();
 		ctx.beginPath();
 		ctx.arc(area.x, area.y, area.range, 1.5 * Math.PI, (lifeTimeRate * 2 + 1.5) * Math.PI, false);
@@ -33,7 +33,7 @@ socket.on('dataUpdate', function (data) {
 	}
 
 	ctx.lineWidth = 1;
-	for(let i = 0; i < playerData.length; i++) {
+	for(let i = 0; i < playersLength; i++) {
 
 		//  DRAW
 		let player = playerData[i];
@@ -42,10 +42,14 @@ socket.on('dataUpdate', function (data) {
 
 		ctx.beginPath();
 		ctx.arc(playerX, playerY, playerRadius, 0, 2 * Math.PI, false);
-		if(player.id === socket.id)
+		if(player.id === socket.id){
+			tableHtml += generatePlayerRow(player, true);
 			ctx.fillStyle = player.isInArea ? "red" : "rgba(250,200,200,0.7)";
-		else
+		}
+		else{
+			tableHtml += generatePlayerRow(player);
 			ctx.fillStyle = player.isInArea ? "white" : "rgba(0,200,200,0.7)";
+		}
 		ctx.fill();
 		ctx.strokeStyle = '#003300';
 		ctx.stroke();
@@ -54,11 +58,6 @@ socket.on('dataUpdate', function (data) {
 		ctx.font = "20px Arial";
 		ctx.fillText(player.no, playerX - 5, playerY + 5);
 		ctx.fillStyle = 'black';
-
-		//   PLAYER LIST
-		playerList += ' ' + player.no;
 	}
-
-	playerListDiv.innerHTML = "Players: " + playerList;
-
+	scoreTable.innerHTML = tableHtml;
 });

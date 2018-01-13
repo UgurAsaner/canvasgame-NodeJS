@@ -10,7 +10,7 @@ module.exports = {
 
 	player:{
 		minNo:1,
-		maxNo:10
+		maxNo:9
 	},
 
 	area:{

@@ -12,6 +12,7 @@ module.exports = {
 
 		self.name = name;
 		self.no = Math.floor(Math.random() * (maxNo - minNo + 1)) + minNo;
+		self.score = 0;
 		self.upKeyPressed = false;
 		self.downKeyPressed = false;
 		self.leftKeyPressed = false;

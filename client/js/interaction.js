@@ -1,4 +1,4 @@
-let playerListDiv = document.getElementById("player-list");
+let scoreTable = document.getElementById("score-table");
 let messageBoard = document.getElementById("message-board");
 let messageForm = document.getElementById("message-form");
 let messageInput = document.getElementById("message-input");

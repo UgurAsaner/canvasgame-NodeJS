@@ -12,7 +12,7 @@ function isInRange (area, player) {
 	let distance = Math.sqrt(x + y);
 	let isInRange = distance < area.range;
 	if(isInRange)
-		reduceLifeTime(area);
+		reduceLifeTimeAndSetScore(area, player);
 	return isInRange;
 }
 
@@ -21,8 +21,9 @@ function generateArea() {
 	listHelper.addArea(area);
 }
 
-function reduceLifeTime(area) {
+function reduceLifeTimeAndSetScore(area, player) {
 		area.lifeTime -= 50;
+		player.score += 0.1;
 		if(area.lifeTime > 0)
 			listHelper.addArea(area);
 		else

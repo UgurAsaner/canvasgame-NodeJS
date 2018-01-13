@@ -111,9 +111,11 @@ function getAllData(players, areas, callback) {
 				cb(null, {
 					id: player.id,
 					no: player.no,
+					name: player.name,
 					x: player.x,
 					y: player.y,
-					isInArea: player.isInArea
+					isInArea: player.isInArea,
+					score: player.score
 				});
 			}
 		}

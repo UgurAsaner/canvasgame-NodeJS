@@ -1,16 +1,16 @@
 function printConsoleMessage(message, type) {
 
-	if (typeof(type) === 'undefined')
+	if(typeof(type) === 'undefined')
 		messageBoard.innerHTML += "<div>" + message + "</div>";
 	else
 		messageBoard.innerHTML += "<div class=\"" + type + "-message\"><span class=\"system-message\">System Message: </span>" + message + "</div>";
 
 }
 
-function keyEventSender(keyCode, state){
+function keyEventSender(keyCode, state) {
 
 	let key;
-	switch (keyCode) {
+	switch(keyCode) {
 
 		case 37:
 			key = 'left';
@@ -34,7 +34,35 @@ function keyEventSender(keyCode, state){
 	socket.emit('keyEvent', data);
 }
 
-function getColorFromDuration(lifeTimeRate) {
+function getColorFromLifeTime(lifeTimeRate) {
 	let opacity = lifeTimeRate * 0.5 + 0.3;
 	return 'rgba(50, 200, 50, ' + opacity + ')';
+}
+
+function generatePlayerRow(player) {
+	return '<tr>' +
+	'<td>' +
+	player.no +
+	'</td>' +
+	'<td>' +
+	player.name +
+	'</td>' +
+	'<td>' +
+	Number(player.score).toFixed(1)+
+	'</td>'+
+	'</tr>';
+}
+
+function generateTableHeadings() {
+	return '<tr>' +
+		'<th>' +
+		'No' +
+		'</th>' +
+		'<th>' +
+		'Name' +
+		'</th>' +
+		'<th>' +
+		'Score' +
+		'</th>' +
+		'</tr>'
 }
