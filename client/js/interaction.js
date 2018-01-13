@@ -41,7 +41,6 @@ document.onkeydown = function (e) {
 	if(e.keyCode === 9 && isGameActive){
 		e.preventDefault();
 		messageInput.focus();
-		console.log('tab');
 	}
 };
 

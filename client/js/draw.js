@@ -1,6 +1,14 @@
-let ctx = document.getElementById("canvas").getContext('2d');
-ctx.font = '20px Arial';
+let canvas = document.getElementById("canvas");
+let ctx = canvas.getContext('2d');
+let playerRadius;
 
+
+socket.on('drawConfig', function (data) {
+	canvas.width = data.canvas.width;
+	canvas.height = data.canvas.height;
+	playerRadius = data.player.radius;
+	socket.emit('playerReady');
+});
 
 socket.on('dataUpdate', function (data) {
 
@@ -8,45 +16,49 @@ socket.on('dataUpdate', function (data) {
 	let playerData = data['playerData'];
 	let areaData = data['areaData'];
 
-	for (let i = 0; i < playerData.length; i++)
-		playerList += ' ' + playerData[i].no;
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	ctx.lineWidth = 3;
+	for(let i = 0; i < areaData.length; i++) {
+		let area = areaData[i];
+		let lifeTimeRate = area.lifeTime / area.totalLifeTime;
+		ctx.beginPath();
+		ctx.arc(area.x, area.y, area.range, 0,  2 * Math.PI, false);
+		ctx.fillStyle = getColorFromDuration(lifeTimeRate);
+		ctx.fill();
+		ctx.beginPath();
+		ctx.arc(area.x, area.y, area.range, 1.5 * Math.PI, (lifeTimeRate * 2 + 1.5) * Math.PI, false);
+		ctx.strokeStyle = 'red';
+		ctx.stroke();
+	}
+
+	ctx.lineWidth = 1;
+	for(let i = 0; i < playerData.length; i++) {
+
+		//  DRAW
+		let player = playerData[i];
+		let playerX = player.x;
+		let playerY = player.y;
+
+		ctx.beginPath();
+		ctx.arc(playerX, playerY, playerRadius, 0, 2 * Math.PI, false);
+		if(player.id === socket.id)
+			ctx.fillStyle = player.isInArea ? "red" : "rgba(250,200,200,0.7)";
+		else
+			ctx.fillStyle = player.isInArea ? "white" : "rgba(0,200,200,0.7)";
+		ctx.fill();
+		ctx.strokeStyle = '#003300';
+		ctx.stroke();
+		ctx.fillStyle = 'black';
+
+		ctx.font = "20px Arial";
+		ctx.fillText(player.no, playerX - 5, playerY + 5);
+		ctx.fillStyle = 'black';
+
+		//   PLAYER LIST
+		playerList += ' ' + player.no;
+	}
 
 	playerListDiv.innerHTML = "Players: " + playerList;
-
-	ctx.clearRect(0, 0, 800, 600);
-
-	for (let i = 0; i < areaData.length; i++) {
-		ctx.beginPath();
-		ctx.arc(areaData[i].x, areaData[i].y, areaData[i].range , 0, 2 * Math.PI, false);
-		ctx.fillStyle = 'green';
-		ctx.fill();
-		ctx.strokeStyle = '#003300';
-		ctx.stroke();
-		ctx.fillStyle = 'black';
-		ctx.fillRect(areaData[i].x, areaData[i].y , 1, 1);
-	}
-
-	for (let i = 0; i < playerData.length; i++) {
-
-		ctx.beginPath();
-		ctx.arc(playerData[i].x, playerData[i].y, 30 , 0, 2 * Math.PI, false);
-		if(playerData[i].id === socket.id)
-			ctx.fillStyle = playerData[i].isInArea ? "red" : "rgba(250,200,200,0.7)";
-		else
-			ctx.fillStyle = playerData[i].isInArea ? "white" : "rgba(0,200,200,0.7)";
-		ctx.fill();
-		ctx.strokeStyle = '#003300';
-		ctx.stroke();
-		ctx.fillStyle = 'black';
-		ctx.fillRect(playerData[i].x, playerData[i].y , 1, 1);
-		ctx.fillText(playerData[i].no, playerData[i].x-12, playerData[i].y+7);
-		ctx.fillStyle = 'black';
-		/*
-		ctx.fillRect(playerData[i].x, playerData[i].y, 40, 40);
-		ctx.fillStyle = "#000000";
-		ctx.fillText(playerData[i].id, playerData[i].x + 10, playerData[i].y + 27);
-		ctx.fillStyle = 'black';
-		ctx.fillRect(playerData[i].x, playerData[i].y, 1, 1);*/
-	}
 
 });

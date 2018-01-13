@@ -1,21 +1,29 @@
 let Entity = require('./entity').Entity;
+let areaConfig = require('../config').area;
+let canvasConfig = require('../config').draw.canvas;
+
+let canvasWidth = canvasConfig.width;
+let canvasHeight = canvasConfig.height;
+
+let minRange = areaConfig.minRange;
+let maxRange = areaConfig.maxRange;
+let lifeTimeCoefficient = areaConfig.lifeTimeCoefficient;
 
 module.exports = {
 	Area: function (id) {
 
 		let self = Entity(id);
+		let maxXPos, maxYPos, minXpos, minYpos;
 
-		self.x = (Math.floor(Math.random() * 650) + 80);
-		self.y = (Math.floor(Math.random() * 450) + 80);
+		self.range = minXpos = minYpos = (Math.floor(Math.random() * (maxRange - minRange + 1)) + minRange);
 
-		self.range = (Math.floor(Math.random() * 50) + 30);
+		maxXPos = canvasWidth - minXpos;
+		maxYPos = canvasHeight - minYpos;
 
-		self.isInRange = function (player) {
-			let x = Math.pow(player.x - self.x, 2);
-			let y = Math.pow(player.y - self.y, 2);
-			let distance = Math.sqrt( x + y );
-			return distance < self.range * 0.6;
-		};
+		self.x = (Math.floor(Math.random() * (maxXPos - minXpos + 1)) + minXpos);
+		self.y = (Math.floor(Math.random() * (maxYPos - minYpos + 1)) + minYpos);
+
+		self.lifeTime = self.totalLifeTime = self.range * lifeTimeCoefficient;
 
 		return self;
 	}

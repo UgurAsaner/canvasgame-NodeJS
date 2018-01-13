@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="client/css/index-style.css">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-<h2 class="text-center">Canvas Game</h2>
+<h2 class="text-center heading">Canvas Game</h2>
 <div class="container" id="sign-div">
     <div class="row center-block">
         <div class="col-md-8 col-md-offset-2">
@@ -12,12 +12,11 @@
     </div>
 </div>
 
-<div id="game-div" class="container" style="display:none">
-    <div class="row center-block">
+<div id="game-div" style="display:none" class="game-div">
+    <div class="row">
         <div class="col-md-12">
-            <canvas id="canvas" width="800" height="600" class="col-md-8 canvas"></canvas>
-
-            <div class="col-md-4 row center-block">
+            <canvas id="canvas" class="canvas pull-left"></canvas>
+            <div class="info-panel pull-right row center-block">
                 <div id="player-list" class="player-list"></div>
                 <div id="message-board" class="message-board"></div>
                 <form id="message-form">

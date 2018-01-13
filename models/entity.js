@@ -1,3 +1,4 @@
+let config = require('../config').entity;
 module.exports = {
 
 	Entity: function (id) {
@@ -6,11 +7,11 @@ module.exports = {
 
 		return {
 			id: id,
-			x: 100,
-			y: 400,
-			vX: 0,
-			vY: 0,
-			vMax: 5
+			x: config.initialXPos,
+			y: config.initialYPos,
+			vX: config.initialXVelocity,
+			vY: config.initialYVelocity,
+			vMax: config.vMax
 		};
 	}
 };

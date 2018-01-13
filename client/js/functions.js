@@ -33,3 +33,8 @@ function keyEventSender(keyCode, state){
 
 	socket.emit('keyEvent', data);
 }
+
+function getColorFromDuration(lifeTimeRate) {
+	let opacity = lifeTimeRate * 0.5 + 0.3;
+	return 'rgba(50, 200, 50, ' + opacity + ')';
+}

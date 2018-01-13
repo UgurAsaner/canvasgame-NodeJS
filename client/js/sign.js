@@ -14,7 +14,7 @@ signButton.onclick = function () {
 };
 
 socket.on('signed', function () {
-	gameDiv.style.display = 'inline-block';
+	gameDiv.style.display = 'block';
 	signDiv.style.display = 'none';
 	isGameActive = true;
 });
