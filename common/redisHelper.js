@@ -3,10 +3,10 @@ let redisClient = redis.createClient();
 let async = require('async');
 
 module.exports = {
-	getAll: getAll,
-	addTo: addTo,
-	removeFrom: removeFrom,
-	getFrom: getFrom
+	getAll,
+	addTo,
+	removeFrom,
+	getFrom
 };
 
 function getAll(prefix, callback) {

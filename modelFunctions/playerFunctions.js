@@ -5,10 +5,10 @@ let async = require('async');
 let drawConfig = require('../config').draw;
 
 module.exports = {
-	setMessage: setMessage,
-	sign:sign,
-	disconnect: disconnect,
-	onKeyEvent: onKeyEvent
+	setMessage,
+	sign,
+	disconnect,
+	onKeyEvent
 };
 
 function sign (socket, data) {

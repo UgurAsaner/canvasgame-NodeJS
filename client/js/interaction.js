@@ -3,6 +3,7 @@ let messageBoard = document.getElementById("message-board");
 let messageForm = document.getElementById("message-form");
 let messageInput = document.getElementById("message-input");
 let desiredKeys = [37, 38, 39, 40];
+let lastEventTimestamp = Date.now();
 
 messageForm.onsubmit = function (e) {
 	e.preventDefault();

@@ -2,8 +2,8 @@ let listHelper = require('../common/listHelper');
 let Area = require('../common/modelsExport').Area;
 
 module.exports = {
-	generateArea: generateArea,
-	isInRange: isInRange
+	generateArea,
+	isInRange
 };
 
 function isInRange (area, player) {

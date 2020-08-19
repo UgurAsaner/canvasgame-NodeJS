@@ -9,11 +9,11 @@ let canvasHeight = drawConfig.canvas.height;
 
 
 module.exports = {
-	sendDataToUsers: sendDataToUsers,
-	removePlayer: removePlayer,
-	mainLoop: mainLoop,
-	generateArea: generateArea,
-	checkConnections: checkConnections
+	sendDataToUsers,
+	removePlayer,
+	mainLoop,
+	generateArea,
+	checkConnections
 };
 
 function generateArea() {
@@ -224,7 +224,6 @@ function runGameLogic(cb){
 			cb(null, entities);
 		}]
 	});
-
 }
 
 function mainLoop() {

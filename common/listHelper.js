@@ -2,17 +2,17 @@ let redisHelper = require('./redisHelper');
 let async = require('async');
 
 module.exports = {
-	getAllPlayers: getAllPlayers,
-	getAllAreas: getAllAreas,
+	getAllPlayers,
+	getAllAreas,
 
-	getPlayer: getPlayer,
-	getArea: getArea,
+	getPlayer,
+	getArea,
 
-	addPlayer: addPlayer,
-	addArea: addArea,
+	addPlayer,
+	addArea,
 
-	removePlayer: removePlayer,
-	removeArea: removeArea
+	removePlayer,
+	removeArea
 };
 
 function getAllPlayers(callback){

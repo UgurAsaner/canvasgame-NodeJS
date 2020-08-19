@@ -1,6 +1,7 @@
 let canvas = document.getElementById("canvas");
 let ctx = canvas.getContext('2d');
 let playerRadius;
+let currentPlayer; 
 
 socket.on('drawConfig', function (data) {
 	canvas.width = data.canvas.width;
@@ -43,6 +44,7 @@ socket.on('dataUpdate', function (data) {
 		ctx.beginPath();
 		ctx.arc(playerX, playerY, playerRadius, 0, 2 * Math.PI, false);
 		if(player.id === socket.id){
+			currentPlayer = player;
 			tableHtml += generatePlayerRow(player, true);
 			ctx.fillStyle = player.isInArea ? "red" : "rgba(250,200,200,0.7)";
 		}
